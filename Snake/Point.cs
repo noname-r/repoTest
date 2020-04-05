@@ -44,10 +44,17 @@ namespace Snake
 
         }
 
-        public void Draw()
+        public bool IsHit(Point p)
+        {
+            return p.x == this.x && p.y == this.y;
+        }
+
+        public void Draw(ConsoleColor color = ConsoleColor.White)
         {
             Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = color;
             Console.Write(sym);
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         internal void Clear()

@@ -12,33 +12,56 @@ namespace Snake
             //Console.WriteLine(Console.BufferWidth.ToString());
             //Console.WriteLine(Console.SetWindowSize);
             //Console.WriteLine(Console.LargestWindowWidth);
-
+            //Console.SetBufferSize(80, 25);
             Console.SetWindowSize(80, 25);
+            Console.CursorVisible = false;
 
-            // Рамочка
-            HorizontalLine upLine = new HorizontalLine(0, 79, 0, '+');
-            HorizontalLine downLine = new HorizontalLine(0, 79, 24, '+');
-            VerticalLine leftLine = new VerticalLine(1, 23, 0, '+');
-            VerticalLine rightLine = new VerticalLine(1, 23, 79, '+');
-            upLine.Draw();
-            downLine.Draw();
-            leftLine.Draw();
-            rightLine.Draw();
+            Walls walls = new Walls(80, 25);
+            walls.Draw();
 
-
+            // отрисовка точек
             Point p1 = new Point(4, 5, '*');
             Snake snake = new Snake(p1, 4, Direction.RIGHT);
-            snake.Draw();
-            int a = 10;
-            while (a-- >0)
+            snake.Draw(ConsoleColor.Green);
+
+            FoodCreator foodCreator = new FoodCreator(80, 25, '@');
+            Point food = foodCreator.CreateFood();
+            food.Draw(ConsoleColor.Yellow);
+
+            while (true)
             {
-                Thread.Sleep(300);
-                snake.Move();
+                if (walls.IsHit(snake)||snake.IsHitTail())
+                {
+                    break;
+                }
+
+                if (snake.Eat(food))
+                {
+                    food = foodCreator.CreateFood();
+                    food.Draw(ConsoleColor.Yellow);
+                }
+                else
+                {
+                    snake.Move();
+                }
+
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey();
+                    snake.HandleKey(key.Key);
+
+                }
+                Thread.Sleep(100);
+                //snake.Move();
             }
 
+            Console.SetCursorPosition(35, 12);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Game over!");
             Console.ReadKey();
         }
 
 
     }
 }
+
